@@ -1,7 +1,8 @@
-from tkinter import *
-import customtkinter
+from customtkinter import *
+import pyautogui as control
+import pynput as input
 
-root = customtkinter.CTk()
+root = CTk()
 root.title("spammy")
 root.geometry("500x350")
 
