@@ -9,7 +9,7 @@ TaskLabel.pack()
 UpdateLink = "https://raw.githubusercontent.com/TristanR-lol/YoSpammy/refs/heads/main/main.pyw"
 NewContent = get(UpdateLink)
 
-with open("main.pyw", "w") as f:
+with open("main.pyw", "w", encoding="utf-8") as f:
   f.write(NewContent.text)
 
 Popen(['pythonw', 'main.pyw'])   
