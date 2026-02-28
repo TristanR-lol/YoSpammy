@@ -6,9 +6,11 @@ UpdateLink2 = "https://raw.githubusercontent.com/TristanR-lol/YoSpammy/refs/head
 NewContent1 = get(UpdateLink1)
 NewContent2 = get(UpdateLink2)
 
-with open("main.pyw", "w", encoding="utf-8") as f:
-  f.write(NewContent1.text)
 with open("setup.bat", "w", encoding="utf-8") as f:
   f.write(NewContent2.text)
-
-Popen(['pythonw', 'main.pyw'])   
+with open("main.pyw", "w", encoding="utf-8") as f:
+  if f.read() != NewContent1:
+    f.write(NewContent1.text)
+    Popen(["setup.bat"], shell=True)
+  else:
+    Popen(['pythonw', 'main.pyw']) 
