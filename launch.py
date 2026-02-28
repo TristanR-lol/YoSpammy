@@ -6,7 +6,7 @@ root = CTk()
 TaskLabel  = CTkLabel(root, text="Updating!")
 TaskLabel.pack()
 
-UpdateLink = "https://raw.githubusercontent.com/TristanR-lol/YoSpammy/refs/heads/main/main.py"
+UpdateLink = "https://raw.githubusercontent.com/TristanR-lol/YoSpammy/refs/heads/main/main.pyw"
 NewContent = get(UpdateLink)
 
 with open("main.pyw", "w") as f:
