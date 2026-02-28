@@ -18,5 +18,5 @@ for /f "delims=" %%i in ('where python') do (
 
 :found
 echo Using Python: %PYTHON%
-"%PYTHON%" -m pip install customtkinter pyautogui win11toast pynput requests
+"%PYTHON%" -m pip install customtkinter pyautogui win11toast pynput requests winshell
 "%PYTHON%" launch.py

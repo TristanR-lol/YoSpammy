@@ -4,6 +4,19 @@ from time import *
 from win11toast import notify, update_progress
 from pynput import keyboard
 from threading import Thread
+import winshell
+from pathlib import Path
+
+target_file = r"setup.bat"
+shortcut_name = "Spammy.lnk"
+desktop = winshell.desktop()
+shortcut_path = Path(desktop) / shortcut_name
+
+with winshell.shortcut(shortcut_path) as link:
+    link.path = target_file
+    link.description = "Open spammy and begin the evil"
+    link.icon = target_file, 0  # Use the file's icon
+    link.working_directory = Path(target_file).parent   
 
 root = CTk()
 root.title("spammy")
