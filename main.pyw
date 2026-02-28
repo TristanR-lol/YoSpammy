@@ -4,8 +4,6 @@ from time import *
 from win11toast import notify, update_progress
 from pynput import keyboard
 from threading import Thread
-import winshell
-from pathlib import Path
 
 root = CTk()
 root.title("spammy")
