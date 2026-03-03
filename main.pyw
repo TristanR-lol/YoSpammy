@@ -6,7 +6,7 @@ from threading import Thread
 
 root = CTk()
 root.title("spammy")
-root.geometry("500x500")
+root.geometry("500x350")
 root.attributes("-topmost", True)
 
 Looping = False
