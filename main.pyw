@@ -1,20 +1,19 @@
 from customtkinter import *
 import pyautogui as control
 from time import *
-from win11toast import notify, update_progress
 from pynput import keyboard
 from threading import Thread
 
 root = CTk()
 root.title("spammy")
-root.geometry("500x350")
+root.geometry("500x500")
 root.attributes("-topmost", True)
 
 Looping = False
 SpamText = ""
 ChatPos = 0, 0
-Tab1Pos = 0, 0
-Tab2Pos = 0, 0
+Tabs = []
+TabNum = 0
 
 def kill_switch():
     global Looping
@@ -23,50 +22,49 @@ def kill_switch():
         print("Key pressed. Key: "+str(key))
         if key == keyboard.Key.esc:
             print("STOP!")
-            notify("Spammy","❌ Stopped ❌")
+            #notify("Spammy","❌ Stopped ❌")
             Looping = False
             exit()
 
     with keyboard.Listener(on_press=on_press) as listener:
         listener.join()
 
-def SelectTabPos(TabNum):
-    global ChatPos, Tab1Pos, Tab2Pos
-    notify("Spammy", "Move your mouse over the button")
+def SelectTabPos(TabNum2):
+    global ChatPos, Tabs, TabNum
+    #notify("Spammy", "Move your mouse over the button")
     sleep(5)
-    notify("Spammy", "📸 Captured 📸")
+    #notify("Spammy", "📸 Captured 📸")
     Pos = control.position()
-    if TabNum == 0:
+    if TabNum2 == 0:
         ChatPos = Pos
-    elif TabNum == 1:
-        Tab1Pos = Pos
-    elif TabNum == 2:
-        Tab2Pos = Pos
+    else:
+        Tabs.insert(TabNum2, Pos)
+        TabNum += 1
+        print(Tabs)
 
 def Start():
-    global Looping
+    global Looping, TabNum, Tabs
+    print(str(Tabs)+str(TabNum))
     Looping = True
     Thread(target=kill_switch, daemon=True).start()
-    notify("Spammy","✅ Started. Press ESCAPE to stop. ✅")
+    #notify("Spammy","✅ Started. Press ESCAPE to stop. ✅")
     while True:
        if Looping == False:
-        return
-       control.click(Tab1Pos)
-       control.click(Tab1Pos)
-       sleep(.1)
-       control.click(ChatPos)
-       sleep(.1)
-       control.typewrite(MessageBox.get())
-       sleep(.3)
-       control.press("enter")
-       control.click(Tab2Pos)
-       sleep(.1)
-       control.click(ChatPos)
-       sleep(.1)
-       control.typewrite(MessageBox.get())
-       sleep(.3)
-       control.press("enter")
-
+           return
+       for i in range(TabNum):
+            print(i)
+            if Looping == False:
+                return
+            control.click(Tabs[i])
+            control.click(Tabs[i])
+            sleep(.1)
+            control.click(ChatPos)
+            sleep(.1)
+            control.typewrite(MessageBox.get())
+            sleep(.1)
+            control.press("enter")
+            sleep(.1)
+            
 #Config
 Info = CTkLabel(master=root, text="Enter the text to spam")
 MessageBox = CTkEntry(
@@ -77,21 +75,16 @@ Info.pack()
 MessageBox.pack()
 Info = CTkLabel(
     master=root,
-    text="Select the tab positions"
+    text="Add tabs to spam in"
 )
-TabButton1 = CTkButton(
+TabButton = CTkButton(
     master=root,
-    text="Tab 1",
+    text="Add Tab",
     command=lambda: SelectTabPos(1),
 )
-TabButton2 = CTkButton(
-    master=root,
-    text="Tab 2",
-    command=lambda: SelectTabPos(2),
-)
 Info.pack()
-TabButton1.pack(pady=2)
-TabButton2.pack(pady=2)
+TabButton.pack(pady=7)
+
 Info = CTkLabel(
     master=root,
     text="Select the chat position"
