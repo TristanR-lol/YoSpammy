@@ -3,6 +3,16 @@ import pyautogui as control
 from time import *
 from pynput import keyboard
 from threading import Thread
+from requests import *
+
+NewContent = get("https://raw.githubusercontent.com/TristanR-lol/YoSpammy/refs/heads/main/launch.py")
+
+with open("launch.py", "w", encoding="utf-8") as f:
+    ReadVal = ""
+    with open("launch.py", "r", encoding="utf-8") as r:
+        ReadVal = r.read()
+    if ReadVal != NewContent.text:
+        f.write(NewContent.text)
 
 root = CTk()
 root.title("spammy")
