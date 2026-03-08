@@ -9,7 +9,7 @@ for /f "delims=" %%i in ('where python') do (
 
 :notfound
 echo Python not found. Installing...
-winget install -e --id Python.Python.3.11 --scope machine
+winget install -e --id Python.Python.3.14 --scope machine
 :: Refresh PATH after install
 for /f "delims=" %%i in ('where python') do (
     set PYTHON=%%i
