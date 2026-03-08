@@ -54,11 +54,11 @@ def SelectTabPos(TabNum2):
 
     overlay = Toplevel(root)
     overlay.attributes("-fullscreen", True)
-    overlay.attributes("-alpha", 0.5)
+    overlay.attributes("-alpha", 0.7)
     overlay.attributes("-topmost", True)
     overlay.configure(bg="black")
 
-    CTkLabel(overlay, text="Click to set the tab position", font=("Arial", 24)).pack(expand=True)
+    CTkLabel(overlay, text="Click to set the tab position", font=("Arial", 40)).pack(expand=True)
 
     def on_click(x, y, button, pressed):
         if pressed:
