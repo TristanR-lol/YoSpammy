@@ -1,5 +1,7 @@
 from subprocess import Popen
 from requests import get
+from sys import executable, argv
+from os import execv
 
 UpdateLink1 = "https://raw.githubusercontent.com/TristanR-lol/YoSpammy/refs/heads/main/main.pyw"
 UpdateLink2 = "https://raw.githubusercontent.com/TristanR-lol/YoSpammy/refs/heads/main/setup.bat"
@@ -18,6 +20,7 @@ if ReadVal != NewContent2:
     with open("setup.bat", "w", encoding="utf-8") as f:
         f.write(NewContent2)
     Popen(["setup.bat"], shell=True)
+    execv(executable, [executable] + argv)
 
 # --- Update main.pyw ---
 with open("main.pyw", "w", encoding="utf-8") as f:
