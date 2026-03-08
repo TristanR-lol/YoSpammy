@@ -8,7 +8,7 @@ NewContent2 = get(UpdateLink2)
 
 with open("setup.bat", "w", encoding="utf-8") as f:
     ReadVal = ""
-    with open("setub.bat", "r", encoding="utf-8") as r:
+    with open("setup.bat", "r", encoding="utf-8") as r:
         ReadVal = r.read()
     if ReadVal != NewContent1.text:
         f.write(NewContent1.text)
