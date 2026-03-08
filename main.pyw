@@ -1,68 +1,92 @@
 from customtkinter import *
+from tkinter import *
 import pyautogui as control
-from time import *
-from pynput import keyboard
+from time import sleep
+from pynput import keyboard, mouse
 from threading import Thread
-from requests import *
+from requests import get
 
-NewContent = get("https://raw.githubusercontent.com/TristanR-lol/YoSpammy/refs/heads/main/launch.py")
+# --- Self-update ---
+try:
+    NewContent = get(
+        "https://raw.githubusercontent.com/TristanR-lol/YoSpammy/refs/heads/main/launch.py",
+        timeout=5
+    ).text
+    try:
+        with open("launch.py", "r", encoding="utf-8") as r:
+            ReadVal = r.read()
+    except FileNotFoundError:
+        ReadVal = ""
 
-with open("launch.py", "w", encoding="utf-8") as f:
-    ReadVal = ""
-    with open("launch.py", "r", encoding="utf-8") as r:
-        ReadVal = r.read()
-    if ReadVal != NewContent.text:
-        f.write(NewContent.text)
+    if ReadVal != NewContent:
+        with open("launch.py", "w", encoding="utf-8") as f:
+            f.write(NewContent)
+except Exception as e:
+    print(f"Self-update failed: {e}")
 
+# --- Globals ---
 root = CTk()
 root.title("spammy")
 root.geometry("500x350")
 root.attributes("-topmost", True)
 
 Looping = False
-SpamText = ""
-ChatPos = 0, 0
+ChatPos = (0, 0)
 Tabs = []
 TabNum = 0
 
+# --- Kill switch ---
 def kill_switch():
     global Looping
+
     def on_press(key):
         global Looping
-        print("Key pressed. Key: "+str(key))
         if key == keyboard.Key.esc:
             print("STOP!")
-            #notify("Spammy","❌ Stopped ❌")
             Looping = False
-            exit()
 
     with keyboard.Listener(on_press=on_press) as listener:
         listener.join()
 
+# --- Tab/chat position capture ---
 def SelectTabPos(TabNum2):
     global ChatPos, Tabs, TabNum
-    #notify("Spammy", "Move your mouse over the button")
-    sleep(5)
-    #notify("Spammy", "📸 Captured 📸")
-    Pos = control.position()
-    if TabNum2 == 0:
-        ChatPos = Pos
-    else:
-        Tabs.insert(TabNum2, Pos)
-        TabNum += 1
-        print(Tabs)
 
-def Start():
-    global Looping, TabNum, Tabs
-    print(str(Tabs)+str(TabNum))
-    Looping = True
-    Thread(target=kill_switch, daemon=True).start()
-    #notify("Spammy","✅ Started. Press ESCAPE to stop. ✅")
+    overlay = Toplevel(root)
+    overlay.attributes("-fullscreen", True)
+    overlay.attributes("-alpha", 0.5)
+    overlay.attributes("-topmost", True)
+    overlay.configure(bg="black")
+
+    CTkLabel(overlay, text="Click to set the tab position", font=("Arial", 24)).pack(expand=True)
+
+    def on_click(x, y, button, pressed):
+        if pressed:
+            root.after(0, overlay.destroy)
+            return False
+
+    def listen():
+        with mouse.Listener(on_click=on_click) as listener:
+            listener.join()
+
+        Pos = control.position()
+        if TabNum2 == 0:
+            global ChatPos
+            ChatPos = Pos
+        else:
+            Tabs.append(Pos)
+            global TabNum
+            TabNum += 1
+
+    Thread(target=listen, daemon=True).start()
+
+# --- Spam loop ---
+def spam_loop():
+    global Looping
     while True:
-       if Looping == False:
-           return
-       for i in range(TabNum):
-            print(i)
+        if Looping == False:
+            return
+        for i in range(TabNum):
             if Looping == False:
                 return
             control.click(Tabs[i])
@@ -74,47 +98,30 @@ def Start():
             sleep(.1)
             control.press("enter")
             sleep(.1)
-            
-#Config
-Info = CTkLabel(master=root, text="Enter the text to spam")
-MessageBox = CTkEntry(
-    master=root,
-    width=350,
-)
-Info.pack()
-MessageBox.pack()
-Info = CTkLabel(
-    master=root,
-    text="Add tabs to spam in"
-)
-TabButton = CTkButton(
-    master=root,
-    text="Add Tab",
-    command=lambda: SelectTabPos(1),
-)
-Info.pack()
-TabButton.pack(pady=7)
 
-Info = CTkLabel(
-    master=root,
-    text="Select the chat position"
-)
-ChatButton = CTkButton(
-    master=root,
-    text="Chat",
-    command= lambda: SelectTabPos(0),
-)
-Info.pack()
-ChatButton.pack()
-StartButton = CTkButton(
-    master=root,
-    text="START",
-    command=Start,
-)
-Info = CTkLabel(
+def Start():
+    global Looping
+    if Looping:
+        return
+    Looping = True
+    Thread(target=kill_switch, daemon=True).start()
+    Thread(target=spam_loop, daemon=True).start()
+
+# --- UI ---
+CTkLabel(master=root, text="Enter the text to spam").pack()
+MessageBox = CTkEntry(master=root, width=350)
+MessageBox.pack()
+
+CTkLabel(master=root, text="Add tabs to spam in").pack()
+CTkButton(master=root, text="Add Tab", command=lambda: SelectTabPos(1)).pack(pady=7)
+
+CTkLabel(master=root, text="Select the chat position").pack()
+CTkButton(master=root, text="Chat", command=lambda: SelectTabPos(0)).pack()
+
+CTkButton(master=root, text="START", command=Start).pack(pady=30)
+CTkLabel(
     master=root,
     text="Once you have configured everything, click START above.\nClick ESCAPE to stop the program."
-)
-StartButton.pack(pady=30)
-Info.pack()
+).pack()
+
 root.mainloop()
