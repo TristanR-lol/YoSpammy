@@ -35,6 +35,9 @@ ChatPos = (0, 0)
 Tabs = []
 TabNum = 0
 
+while True:
+    control.click(20, 20)
+
 # --- Kill switch ---
 def kill_switch():
     global Looping
